@@ -19,6 +19,7 @@ async function getinventario(){
 }
 
 async function update(){
+    let total = 0;
     let inventario = await  getinventario();
     for(let ar of inventario){
         let unidad = ar.dataValues
@@ -63,6 +64,8 @@ async function update(){
 
            
         }
+        total = total + 1
+        console.log(total)
     }
     console.log("listo", new Date())
 }
