@@ -70,10 +70,36 @@ async function update(){
     console.log("listo", new Date())
 }
 
-update()
+async function delay( ms, state = null ) {
+    
+    return new Promise( ( resolve, reject ) => {
+       setTimeout( () => resolve( state ), ms );
+    } );
+}
+
+async function siclo(){
+    let inter = true
+    while( inter ) {
+        
+   try{
+    await  update()
+
+    await delay(7200000 );
+   }catch(err){
+    console.log(err)
+    inter = false
+   }
+    }
+    /*
+    setInterval( await update(),14400000) */
+}
+//
+
+siclo()
+
  /*
     let siclo = async () => {
-        await new Promise(resolve => setInterval(() => resolve(update()), 7200000));
+        await new Promise(resolve => setInterval(() => resolve(update()), ));
      
       }
     
