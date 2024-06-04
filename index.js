@@ -25,14 +25,16 @@ async function update(){
     let inventario = await  getinventario();
     for(let ar of inventario){
         let unidad = ar.dataValues
+    
         let art = await  articulo.findOne({sap:unidad.Referencia})
         
         if(art){
             imagen = await  img.findOne({sap:unidad.Referencia})
             if(imagen)
                 if(imagen.status){
-
-               art.status = unidad.Disponible;  
+                   
+               art.status = unidad.DisponibleTienda || unidad.DisponibleCDD ;  
+               
             }else{
                 art.status = false;  
             }
@@ -46,13 +48,16 @@ async function update(){
              
             await art.save()
         }else{
-        if(unidad.Disponible){
+        if(unidad.DisponibleTienda || unidad.DisponibleCDD){
             art = new articulo()
             art.sap = unidad.Referencia;
             imagen = await img.findOne({sap:unidad.Referencia})
             if(imagen)
                 if(imagen.status){
-               art.status = unidad.Disponible;  
+                    
+                   
+               art.status = unidad.DisponibleTienda || unidad.DisponibleCDD;  
+              
             }else{
                 art.status = false;  
             }
@@ -81,8 +86,9 @@ async function update(){
 
            
         }
+        console.clear()
         total = total + 1
-        console.log(total)
+        console.log( "actualizando ->"+ total+" Productos")
     }
     console.log("listo", new Date())
 }

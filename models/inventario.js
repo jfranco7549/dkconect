@@ -33,7 +33,10 @@ const Inventario = db.define('DisponibleEcommerce',
         Marca:{
             type:DataTypes.STRING
         },
-        Disponible:{
+        DisponibleTienda:{
+            type:DataTypes.BOOLEAN
+        },
+        DisponibleCDD:{
             type:DataTypes.BOOLEAN
         },
         TienePromocion:{
