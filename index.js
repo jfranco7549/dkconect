@@ -3,6 +3,7 @@ const mongouri = 'mongodb://localhost:27017/dkstore'
 const mongoose = require('mongoose')
 const Producto = require('./models/producto.js')
 const articulo = require('./models/articulo.js')
+const img = require('./models/img.js')
 const Marca = require('./models/marca.js')
 const categoria = require('./models/categoria.js')
 const caracteristica = require('./models/caracteristica.js')
@@ -19,14 +20,23 @@ async function getinventario(){
 }
 
 async function update(){
+    let imagen = null
     let total = 0;
     let inventario = await  getinventario();
     for(let ar of inventario){
         let unidad = ar.dataValues
         let art = await  articulo.findOne({sap:unidad.Referencia})
+        
         if(art){
-            art.status = unidad.Disponible;
-            art.precio = unidad.Precio;
+            imagen = await  img.findOne({sap:unidad.Referencia})
+            if(imagen)
+                if(imagen.status){
+
+               art.status = unidad.Disponible;  
+            }else{
+                art.status = false;  
+            }
+            art.precio = Math.round(unidad.Precio);
             art.promo = unidad.TienePromocion;
             if(unidad.CantidadVendida){
                 art.uv = unidad.CantidadVendida; 
@@ -39,13 +49,20 @@ async function update(){
         if(unidad.Disponible){
             art = new articulo()
             art.sap = unidad.Referencia;
-            art.status = unidad.Disponible;
+            imagen = await img.findOne({sap:unidad.Referencia})
+            if(imagen)
+                if(imagen.status){
+               art.status = unidad.Disponible;  
+            }else{
+                art.status = false;  
+            }
+           
             if(unidad.CantidadVendida){
                 art.uv = unidad.CantidadVendida; 
             }else{
                 art.uv = 0; 
             }      
-            art.precio = unidad.Precio;
+            art.precio =  Math.round(unidad.Precio);
             
             art.marca = unidad.Marca;
             art.familia = unidad.Linea;
