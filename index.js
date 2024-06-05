@@ -30,14 +30,18 @@ async function update(){
         
         if(art){
             imagen = await  img.findOne({sap:unidad.Referencia})
-            if(imagen)
-                if(imagen.status){
+            if(ar.Referencia == "LM-00000887"){
+                console.log("imagen",imagen)
+                console.log("disponible",unidad.DisponibleTienda || unidad.DisponibleCDD )
+            }
+            art.status = false;  
+            if(imagen){
+                if(imagen.status && unidad.DisponibleTienda || unidad.DisponibleCDD ){
                    
                art.status = unidad.DisponibleTienda || unidad.DisponibleCDD ;  
                
-            }else{
-                art.status = false;  
             }
+        }
             art.precio = Math.round(unidad.Precio);
             art.promo = unidad.TienePromocion;
             if(unidad.CantidadVendida){
@@ -51,17 +55,18 @@ async function update(){
         if(unidad.DisponibleTienda || unidad.DisponibleCDD){
             art = new articulo()
             art.sap = unidad.Referencia;
+            
             imagen = await img.findOne({sap:unidad.Referencia})
-            if(imagen)
-                if(imagen.status){
+          
+            art.status = false;  
+            if(imagen){
+                if(imagen.status && unidad.DisponibleTienda || unidad.DisponibleCDD){
                     
                    
                art.status = unidad.DisponibleTienda || unidad.DisponibleCDD;  
               
-            }else{
-                art.status = false;  
             }
-           
+        }
             if(unidad.CantidadVendida){
                 art.uv = unidad.CantidadVendida; 
             }else{
