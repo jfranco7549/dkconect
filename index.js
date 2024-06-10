@@ -51,8 +51,11 @@ async function update(){
             }
 
              let prod = await Producto.findOne({sap:unidad.Referencia})
-             prod.status =  art.status
-             prod.save()
+             if(prod){
+                  prod.status =  art.status
+                 await  prod.save()
+             }
+           
             await art.save()
         }else{
         if(unidad.DisponibleTienda || unidad.DisponibleCDD){
