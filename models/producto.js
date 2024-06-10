@@ -6,6 +6,8 @@ const producto = new  Schema({
  meleid:Number,
 
  sap:String,
+ 
+ status:Boolean,
 
  descripcion:String,
 

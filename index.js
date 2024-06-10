@@ -31,14 +31,14 @@ async function update(){
         if(art){
             imagen = await  img.findOne({sap:unidad.Referencia})
             if(ar.Referencia == "LM-00000887"){
-                console.log("imagen",imagen)
-                console.log("disponible",unidad.DisponibleTienda || unidad.DisponibleCDD )
+        
             }
             art.status = false;  
             if(imagen){
                 if(imagen.status && unidad.DisponibleTienda || unidad.DisponibleCDD ){
                    
                art.status = unidad.DisponibleTienda || unidad.DisponibleCDD ;  
+              
                
             }
         }
@@ -49,7 +49,10 @@ async function update(){
             }else{
                 art.uv = 0; 
             }
-             
+
+             let prod = await Producto.findOne({sap:unidad.Referencia})
+             prod.status =  art.status
+             prod.save()
             await art.save()
         }else{
         if(unidad.DisponibleTienda || unidad.DisponibleCDD){
@@ -80,7 +83,9 @@ async function update(){
             art.categoria = unidad.familia;
             await art.save()
            let  prod = new Producto();
-           prod.sap = unidad.Referencia;  
+
+           prod.status = art.status;  
+           prod.sap = unidad.Referencia; 
            prod.descripcion = unidad.Nombre;
            prod.linea = unidad.Linea;
            await prod.save()
@@ -112,7 +117,7 @@ async function siclo(){
    try{
     await  update()
 
-    await delay(7200000 );
+    await delay(14400000 );
    }catch(err){
     console.log(err)
     inter = false
