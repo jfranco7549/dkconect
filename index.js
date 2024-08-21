@@ -25,14 +25,15 @@ async function update(){
     let inventario = await  getinventario();
     for(let ar of inventario){
         let unidad = ar.dataValues
-    
+       let  repuesto = false;
+        if(unidad.Referencia[0] == '3'){
+            repuesto = true
+        }
         let art = await  articulo.findOne({sap:unidad.Referencia})
         
         if(art){
             imagen = await  img.findOne({sap:unidad.Referencia})
-            if(ar.Referencia == "LM-00000887"){
-        
-            }
+           
             art.status = false;  
             if(imagen){
                 if(imagen.status && unidad.DisponibleTienda || unidad.DisponibleCDD ){
@@ -43,6 +44,9 @@ async function update(){
             }
         }
             art.precio = Math.round(unidad.Precio);
+            if( art.precio < 1){
+                art.status = false
+            }
             art.promo = unidad.TienePromocion;
             if(unidad.CantidadVendida){
                 art.uv = unidad.CantidadVendida; 
@@ -52,24 +56,42 @@ async function update(){
 
              let prod = await Producto.findOne({sap:unidad.Referencia})
              if(prod){
+                if(repuesto){
+                    prod.linea = 'repuesto';
+                   
+                }
                   prod.status =  art.status
                  await  prod.save()
              }
+             if(repuesto){
+
+                 art.familia = 'repuesto';
+            if(unidad.Referencia[0] == '3' && unidad.Referencia[0] == '1' ){
+              art.categoria = 'repuesto';
+            }else{
+                art.categoria = 'accesorios';
+            }
+                
+            }
            
             await art.save()
         }else{
-        if(unidad.DisponibleTienda || unidad.DisponibleCDD){
+        if(unidad.DisponibleTienda || unidad.DisponibleCDD ){
             art = new articulo()
             art.sap = unidad.Referencia;
             
             imagen = await img.findOne({sap:unidad.Referencia})
           
-            art.status = false;  
+            art.status = false; 
+             
             if(imagen){
                 if(imagen.status && unidad.DisponibleTienda || unidad.DisponibleCDD){
                     
                    
                art.status = unidad.DisponibleTienda || unidad.DisponibleCDD;  
+               if( art.precio < 1){
+                art.status = false
+            }
               
             }
         }
@@ -79,18 +101,31 @@ async function update(){
                 art.uv = 0; 
             }      
             art.precio =  Math.round(unidad.Precio);
-            
+            if( art.precio < 1){
+                art.status = false
+            }
+          
             art.marca = unidad.Marca;
             art.familia = unidad.Linea;
             art.promo = unidad.TienePromocion;
             art.categoria = unidad.familia;
+            if(repuesto){
+                art.familia = 'repuesto';
+                art.categoria = 'repuesto';
+            }
             await art.save()
            let  prod = new Producto();
 
            prod.status = art.status;  
+           if( art.precio < 1){
+            prod.status = false
+        }
            prod.sap = unidad.Referencia; 
            prod.descripcion = unidad.Nombre;
            prod.linea = unidad.Linea;
+           if(repuesto){
+            prod.linea = 'repuesto';
+        }
            await prod.save()
            
         }
