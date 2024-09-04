@@ -1,5 +1,6 @@
 
 const mongouri = 'mongodb://localhost:27017/dkstore'
+
 const mongoose = require('mongoose')
 const Producto = require('./models/producto.js')
 const articulo = require('./models/articulo.js')
@@ -73,7 +74,7 @@ async function update(){
             }
                 
             }
-           
+           console.log( unidad.Referencia,"guardado")
             await art.save()
         }else{
         if(unidad.DisponibleTienda || unidad.DisponibleCDD ){
@@ -113,6 +114,7 @@ async function update(){
                 art.familia = 'repuesto';
                 art.categoria = 'repuesto';
             }
+            console.log(unidad.Referencia,"guardado")
             await art.save()
            let  prod = new Producto();
 
@@ -126,6 +128,7 @@ async function update(){
            if(repuesto){
             prod.linea = 'repuesto';
         }
+       
            await prod.save()
            
         }
@@ -134,9 +137,9 @@ async function update(){
 
            
         }
-        console.clear()
+      //  console.clear()
         total = total + 1
-        console.log( "actualizando ->"+ total+" Productos")
+      //  console.log( "actualizando ->"+ total+" Productos")
     }
     console.log("listo", new Date())
 }
