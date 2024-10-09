@@ -161,7 +161,7 @@ async function siclo(){
     await delay(14400000 );
    }catch(err){
     console.log(err)
-    inter = false
+   // inter = false
    }
     }
     /*
